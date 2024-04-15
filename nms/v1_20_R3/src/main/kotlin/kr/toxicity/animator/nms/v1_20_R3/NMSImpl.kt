@@ -3,16 +3,22 @@ package kr.toxicity.animator.nms.v1_20_R3
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.datafixers.util.Pair
+import com.ticxo.playeranimator.api.nms.IRangeManager
 import com.ticxo.playeranimator.api.nms.IRenderer
 import com.ticxo.playeranimator.api.texture.TextureWrapper
+import com.ticxo.playeranimator.nms.v1_20_R3.entity.RangeManager
 import kr.toxicity.animator.api.nms.NMS
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.network.protocol.game.*
 import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.entity.ai.behavior.EntityTracker
 import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -49,6 +55,33 @@ class NMSImpl: NMS, com.ticxo.playeranimator.nms.v1_20_R3.NMSHandler_v1_20_R3() 
         )
         targetPlayers.forEach {
             (it as CraftPlayer).handle.connection.send(packet)
+        }
+    }
+
+    override fun createRangeManager(entity: Entity): IRangeManager {
+        return runCatching {
+            val tracker = (entity as CraftEntity).handle.tracker!!
+            object : IRangeManager {
+                override fun addPlayer(p0: Player) {
+                    tracker.seenBy.add((p0 as CraftPlayer).handle.connection)
+                }
+                override fun removePlayer(p0: Player) {
+                    tracker.seenBy.remove((p0 as CraftPlayer).handle.connection)
+                }
+                override fun setRenderDistance(p0: Int) {
+                    runCatching {
+                        EntityTracker::class.java.getDeclaredField("d").run {
+                            isAccessible = true
+                            set(tracker, p0)
+                        }
+                    }
+                }
+                override fun getPlayerInRange(): MutableSet<Player> = tracker.seenBy.map {
+                    it.player.bukkitEntity
+                }.toMutableSet()
+            }
+        }.getOrElse {
+            super.createRangeManager(entity)
         }
     }
 }

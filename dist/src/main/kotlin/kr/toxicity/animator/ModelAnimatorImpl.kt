@@ -220,6 +220,7 @@ class ModelAnimatorImpl: ModelAnimator() {
         }
         AnimationResult.SUCCESS
     }.getOrElse {
+        it.printStackTrace()
         AnimationResult.FAIL
     }
 
