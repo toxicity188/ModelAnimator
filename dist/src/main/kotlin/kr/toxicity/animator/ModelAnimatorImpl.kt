@@ -236,6 +236,7 @@ class ModelAnimatorImpl: ModelAnimator() {
             File(dataFolder.apply {
                 if (!exists()) mkdir()
             }, "packs").apply {
+                if (!exists()) mkdir()
                 val steve = File(this, "steve.bbmodel")
                 if (!steve.exists()) getResource("steve.bbmodel")?.buffered()?.use { copy ->
                     steve.outputStream().buffered().use { os ->
