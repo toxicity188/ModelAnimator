@@ -76,7 +76,7 @@ class DisplayRendererImpl(private val nmsImpl: NMSImpl): IRenderer {
     }
     private var data: PlayerBoneData? = null
 
-    private enum class ModelEngineLimb(
+    private enum class AnimatorLimb(
         val modelId: Int,
         val slimId: Int,
         val initialTranslation: Vector3f
@@ -118,23 +118,23 @@ class DisplayRendererImpl(private val nmsImpl: NMSImpl): IRenderer {
         display.viewRange = 0.6F
         display.itemTransform = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
         display.startRiding(cloud)
-        val modelEngineLimb = when (limb.type ?: LimbType.HEAD) {
-            LimbType.HEAD -> ModelEngineLimb.HEAD
-            LimbType.HIP -> ModelEngineLimb.HIP
-            LimbType.WAIST -> ModelEngineLimb.WAIST
-            LimbType.CHEST -> ModelEngineLimb.CHEST
-            LimbType.RIGHT_ARM -> ModelEngineLimb.RIGHT_ARM
-            LimbType.RIGHT_FOREARM -> ModelEngineLimb.RIGHT_FOREARM
-            LimbType.LEFT_ARM -> ModelEngineLimb.LEFT_ARM
-            LimbType.LEFT_FOREARM -> ModelEngineLimb.LEFT_FOREARM
-            LimbType.RIGHT_LEG -> ModelEngineLimb.RIGHT_LEG
-            LimbType.RIGHT_FORELEG -> ModelEngineLimb.RIGHT_FORELEG
-            LimbType.LEFT_LEG -> ModelEngineLimb.LEFT_LEG
-            LimbType.LEFT_FORELEG -> ModelEngineLimb.LEFT_FORELEG
-            LimbType.RIGHT_ITEM -> ModelEngineLimb.RIGHT_ITEM
-            LimbType.LEFT_ITEM -> ModelEngineLimb.LEFT_ITEM
+        val animatorLimb = when (limb.type ?: LimbType.HEAD) {
+            LimbType.HEAD -> AnimatorLimb.HEAD
+            LimbType.HIP -> AnimatorLimb.HIP
+            LimbType.WAIST -> AnimatorLimb.WAIST
+            LimbType.CHEST -> AnimatorLimb.CHEST
+            LimbType.RIGHT_ARM -> AnimatorLimb.RIGHT_ARM
+            LimbType.RIGHT_FOREARM -> AnimatorLimb.RIGHT_FOREARM
+            LimbType.LEFT_ARM -> AnimatorLimb.LEFT_ARM
+            LimbType.LEFT_FOREARM -> AnimatorLimb.LEFT_FOREARM
+            LimbType.RIGHT_LEG -> AnimatorLimb.RIGHT_LEG
+            LimbType.RIGHT_FORELEG -> AnimatorLimb.RIGHT_FORELEG
+            LimbType.LEFT_LEG -> AnimatorLimb.LEFT_LEG
+            LimbType.LEFT_FORELEG -> AnimatorLimb.LEFT_FORELEG
+            LimbType.RIGHT_ITEM -> AnimatorLimb.RIGHT_ITEM
+            LimbType.LEFT_ITEM -> AnimatorLimb.LEFT_ITEM
         }
-        data.translation = Vector3f(modelEngineLimb.initialTranslation)
+        data.translation = Vector3f(animatorLimb.initialTranslation)
         if (limb.type.isItem) {
             val var4 = limb.model.base as? LivingEntity ?: return
 
@@ -147,7 +147,7 @@ class DisplayRendererImpl(private val nmsImpl: NMSImpl): IRenderer {
         } else {
             display.itemStack = CraftItemStack.asNMSCopy(nmsImpl.setSkullTexture(null, limb.model.texture).apply {
                 itemMeta = itemMeta?.apply {
-                    setCustomModelData(if (limb.model.texture.isSlim) modelEngineLimb.slimId else modelEngineLimb.modelId)
+                    setCustomModelData(if (limb.model.texture.isSlim) animatorLimb.slimId else animatorLimb.modelId)
                 }
             })
         }
