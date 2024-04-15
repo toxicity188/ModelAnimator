@@ -228,14 +228,15 @@ class ModelAnimatorImpl: ModelAnimator() {
         onReload = true
         val time = System.currentTimeMillis()
         return runCatching {
-            loadAssets("pack", File(dataFolder,"build").apply {
+            val data = dataFolder.apply {
+                if (!exists()) mkdir()
+            }
+            loadAssets("pack", File(data,"build").apply {
                 deleteRecursively()
                 mkdir()
             })
             animator.animationManager.clearRegistry()
-            File(dataFolder.apply {
-                if (!exists()) mkdir()
-            }, "packs").apply {
+            File(data, "packs").apply {
                 if (!exists()) mkdir()
                 val steve = File(this, "steve.bbmodel")
                 if (!steve.exists()) getResource("steve.bbmodel")?.buffered()?.use { copy ->
