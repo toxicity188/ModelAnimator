@@ -9,8 +9,6 @@ folia-supported: true
 libraries:
   - "net.kyori:adventure-api:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
-depend:
-  - ModelEngine
 commands:
   modelanimator:
     aliases: ma
