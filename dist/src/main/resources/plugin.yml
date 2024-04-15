@@ -1,0 +1,25 @@
+name: ModelAnimator
+main: kr.toxicity.animator.ModelAnimatorImpl
+version: ${version}
+description: A improved version of PlayerAnimator
+api-version: 1.19
+author: toxicity
+load: POSTWORLD
+folia-supported: true
+libraries:
+  - "net.kyori:adventure-api:${adventure}"
+  - "net.kyori:adventure-platform-bukkit:${platform}"
+depend:
+  - ModelEngine
+commands:
+  modelanimator:
+    aliases: ma
+    description: ModelAnimator's command
+    usage: /<command>
+permissions:
+  modelanimator.reload:
+    description: Access to reload command.
+    default: op
+  modelanimator.play:
+    description: Access to play command.
+    default: op
