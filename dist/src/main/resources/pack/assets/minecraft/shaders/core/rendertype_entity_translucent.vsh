@@ -146,9 +146,10 @@ void main() {
             UVout = origins[2 * (partId - 1) + outerLayer];
             UVout2 = origins[2 * (partId - 1)];
 
-            bool isBody = (partId == 5 || partId == 6 || partId == 7);
+            bool isBody = (partId >= 5 && partId <= 7);
+            bool isLeg = (partId >= 8);
 
-            if (slim && (partId == 1 || partId == 2 || partId == 3 || partId == 4)) {
+            if (slim && (partId >= 1 && partId <= 4)) {
                 subuvIndex += 6;
             }
             else if (isBody) {
@@ -162,7 +163,7 @@ void main() {
                 subuv.y += t * (2 - partIdKey);
                 subuv.w -= t * partIdKey;
             } else {
-                if ((partId % 2) == 0) {
+                if (((partId + (isLeg ? 1 : 0)) % 2) == 0) {
                     subuv.y = (subuv.w + subuv.y) / 2;
                 } else {
                     subuv.w = (subuv.w + subuv.y) / 2;
