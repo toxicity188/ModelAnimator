@@ -1,6 +1,5 @@
 package kr.toxicity.animator
 
-import com.ticxo.playeranimator.PlayerAnimatorImpl
 import com.ticxo.playeranimator.api.PlayerAnimator
 import com.ticxo.playeranimator.api.PlayerAnimatorPlugin
 import com.ticxo.playeranimator.api.animation.AnimationManager
@@ -145,9 +144,17 @@ class ModelAnimatorImpl: ModelAnimator() {
                 p1: Command,
                 p2: String,
                 p3: Array<out String>
-            ): MutableList<String>? {
+            ): List<String>? {
                 return when (p3.size) {
-                    1 -> mutableListOf("reload", "play")
+                    1 -> listOf("reload", "play")
+                    2 -> ArrayList<String>().apply {
+                        animator.animationManager.registry.forEach {
+                            val key = it.key.substringAfterLast(':')
+                            it.value.animations.keys.forEach { s ->
+                                add("$key.${s}")
+                            }
+                        }
+                    }
                     else -> null
                 }
             }
