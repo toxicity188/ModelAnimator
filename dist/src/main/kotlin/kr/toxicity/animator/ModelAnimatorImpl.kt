@@ -24,6 +24,9 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import java.io.File
@@ -100,6 +103,15 @@ class ModelAnimatorImpl: ModelAnimator() {
         PlayerAnimatorPlugin.plugin = this
         animator.nms = nms as INMSHandler
         PlayerAnimator.api = animator
+        Bukkit.getPluginManager().registerEvents(object : Listener {
+            @EventHandler
+            fun quit(e: PlayerQuitEvent) {
+                playerMap.remove(e.player.uniqueId)?.let {
+                    e.player.isInvisible = false
+                    it.cancel()
+                }
+            }
+        }, this)
         getCommand("modelanimator")?.setExecutor(object : TabExecutor {
             override fun onCommand(p0: CommandSender, p1: Command, p2: String, p3: Array<out String>): Boolean {
                 when (if (p3.isEmpty()) "help" else p3[0]) {
