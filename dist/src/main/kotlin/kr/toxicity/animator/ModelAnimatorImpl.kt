@@ -48,6 +48,9 @@ class ModelAnimatorImpl: ModelAnimator() {
 
     override fun onEnable() {
         nms = when (val version = Bukkit.getServer()::class.java.`package`.name.split('.')[3]) {
+            "v1_19_R3" -> kr.toxicity.animator.nms.v1_19_R3.NMSImpl()
+            "v1_20_R1" -> kr.toxicity.animator.nms.v1_20_R1.NMSImpl()
+            "v1_20_R2" -> kr.toxicity.animator.nms.v1_20_R2.NMSImpl()
             "v1_20_R3" -> kr.toxicity.animator.nms.v1_20_R3.NMSImpl()
             else -> {
                 warn("Unsupported version found: $version")
@@ -286,16 +289,12 @@ class ModelAnimatorImpl: ModelAnimator() {
                 if (!entry.name.startsWith(prefix)) return@forEach
                 if (entry.name.length <= prefix.length + 1) return@forEach
                 val name = entry.name.substring(prefix.length + 1)
-                val file = File(dir, name)
-                if (entry.isDirectory) {
-                    if (!file.exists()) file.mkdir()
-                } else {
+                if (!entry.isDirectory) {
                     getResource(entry.name)?.buffered()?.use { stream ->
-                        if (!file.exists()) {
-                            file.createNewFile()
-                            file.outputStream().buffered().use { fos ->
-                                stream.copyTo(fos)
-                            }
+                        File(dir, name).apply {
+                            parentFile.mkdirs()
+                        }.outputStream().buffered().use { fos ->
+                            stream.copyTo(fos)
                         }
                     }
                 }

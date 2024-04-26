@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "1.9.23"
     id("com.github.johnrengelman.shadow") version("8.1.1")
-    id("io.papermc.paperweight.userdev") version "1.5.12" apply false
+    id("io.papermc.paperweight.userdev") version "1.5.15" apply false
 }
 
 val api = project(":api")
@@ -14,6 +14,9 @@ val adventureVersion = "4.16.0"
 val platformVersion = "4.3.2"
 
 val nmsVersions = listOf(
+    "v1_19_R3",
+    "v1_20_R1",
+    "v1_20_R2",
     "v1_20_R3"
 )
 

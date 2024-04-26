@@ -1,4 +1,4 @@
-package kr.toxicity.animator.nms.v1_20_R3
+package kr.toxicity.animator.nms.v1_20_R2
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
@@ -13,15 +13,15 @@ import net.minecraft.network.protocol.game.*
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.ai.behavior.EntityTracker
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class NMSImpl: NMS, com.ticxo.playeranimator.nms.v1_20_R3.NMSHandler_v1_20_R3() {
+class NMSImpl: NMS, com.ticxo.playeranimator.nms.v1_20_R2.NMSHandler_v1_20_R2() {
     override fun createRenderer(): IRenderer = DisplayRendererImpl(this)
     override fun getTexture(player: Player): String {
         return (player as CraftPlayer).handle.gameProfile.properties.get("textures").first().value
