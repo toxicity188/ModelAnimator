@@ -21,3 +21,6 @@ permissions:
   modelanimator.play:
     description: Access to play command.
     default: op
+  modelanimator.stop:
+    description: Access to stop command.
+    default: op

@@ -27,7 +27,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
@@ -162,18 +161,36 @@ class ModelAnimatorImpl: ModelAnimator() {
                         } else p0.sendMessage("You have no permission.")
                     }
                     "play" -> {
-                        val player = (p0 as? Player) ?: run {
-                            p0.sendMessage("You are not player.")
-                            return true
-                        }
-                        if (p3.size < 2) {
-                            p0.sendMessage("/ma play <animation>")
-                            return true
-                        }
                         if (p0.hasPermission("modelanimator.play")) {
-                            when (animate(player, "animator.${p3[1]}")) {
+                            val player = if (p3.size > 2) Bukkit.getPlayer(p3[2]) ?: run {
+                                p0.sendMessage("There's no player: ${p3[2]}")
+                                return true
+                            } else (p0 as? Player) ?: run {
+                                p0.sendMessage("You are not player.")
+                                return true
+                            }
+                            if (p3.size < 2) {
+                                p0.sendMessage("/ma play <animation>")
+                                return true
+                            }
+                            when (animate(player, p3[1])) {
                                 AnimationResult.SUCCESS -> p0.sendMessage("Successfully played.")
                                 AnimationResult.FAIL -> p0.sendMessage("This animation doesn't exist: ${p3[1]}")
+                            }
+                        } else p0.sendMessage("You have no permission.")
+                    }
+                    "stop" -> {
+                        if (p0.hasPermission("modelanimator.stop")) {
+                            if (stop(if (p3.size > 1) Bukkit.getPlayer(p3[1]) ?: run {
+                                p0.sendMessage("There's no player: ${p3[1]}")
+                                return true
+                            } else (p0 as? Player) ?: run {
+                                p0.sendMessage("You are not player.")
+                                return true
+                            })) {
+                                p0.sendMessage("Successfully stopped.")
+                            } else {
+                                p0.sendMessage("There's no animation to stop.")
                             }
                         } else p0.sendMessage("You have no permission.")
                     }
@@ -222,6 +239,10 @@ class ModelAnimatorImpl: ModelAnimator() {
     abstract class CancellablePlayerModel(player: Player): PlayerModel(player) {
         abstract fun cancel()
     }
+
+    override fun stop(player: Player): Boolean {
+        return playerMap.remove(player.uniqueId)?.cancel() != null
+    }
     override fun animate(player: Player, animation: String): AnimationResult = runCatching {
         val uuid = player.uniqueId
         val hand = player.inventory.itemInMainHand
@@ -257,7 +278,7 @@ class ModelAnimatorImpl: ModelAnimator() {
                 }
             }
         }.apply {
-            playAnimation(animation)
+            playAnimation("animator.$animation")
         })?.cancel()
         scheduler.asyncTask {
             player.isInvisible = true

@@ -24,6 +24,7 @@ public abstract class ModelAnimator extends JavaPlugin {
     public abstract @NotNull AnimatorScheduler scheduler();
     public abstract @NotNull NMS nms();
     public abstract @NotNull AnimationResult animate(@NotNull Player player, @NotNull String animation);
+    public abstract boolean stop(@NotNull Player player);
     public abstract @NotNull ReloadResult reload();
     public abstract boolean onReload();
 }
