@@ -209,14 +209,20 @@ class ModelAnimatorImpl: ModelAnimator() {
                 p3: Array<out String>
             ): List<String>? {
                 return when (p3.size) {
-                    1 -> listOf("reload", "play")
-                    2 -> ArrayList<String>().apply {
-                        animator.animationManager.registry.forEach {
-                            val key = it.key.substringAfterLast(':')
-                            it.value.animations.keys.forEach { s ->
-                                add("$key.${s}")
+                    1 -> listOf("reload", "play", "stop")
+                    2 -> when (p3[1]) {
+                        "play" -> ArrayList<String>().apply {
+                            animator.animationManager.registry.forEach {
+                                val key = it.key.substringAfterLast(':')
+                                it.value.animations.keys.forEach { s ->
+                                    add("$key.${s}")
+                                }
                             }
                         }
+                        "stop" -> Bukkit.getOnlinePlayers().map {
+                            it.name
+                        }
+                        else -> emptyList()
                     }
                     else -> null
                 }
