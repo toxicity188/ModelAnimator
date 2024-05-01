@@ -275,6 +275,9 @@ class ModelAnimatorImpl: ModelAnimator() {
                     ),
                     targetPlayer
                 )
+                show()
+            }
+            private fun show() {
                 player.updateInventory()
                 player.isInvisible = false
                 playerMap.remove(uuid)
@@ -283,6 +286,7 @@ class ModelAnimatorImpl: ModelAnimator() {
                 targetPlayer.forEach {
                     despawn(it)
                 }
+                show()
             }
         }.apply {
             playAnimation("animator.$animation")
