@@ -26,7 +26,14 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemBreakEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerItemMendEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import java.io.File
@@ -113,6 +120,30 @@ class ModelAnimatorImpl: ModelAnimator() {
                     e.player.isInvisible = false
                     it.cancel()
                 }
+            }
+            @EventHandler
+            fun onItemSwap(e: PlayerSwapHandItemsEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
+            }
+            @EventHandler
+            fun onItemChange(e: PlayerItemHeldEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
+            }
+            @EventHandler
+            fun onItemConsume(e: PlayerItemConsumeEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
+            }
+            @EventHandler
+            fun onItemMend(e: PlayerItemMendEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
+            }
+            @EventHandler
+            fun onInteract(e: PlayerInteractEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
+            }
+            @EventHandler
+            fun onItemDamage(e: PlayerItemDamageEvent) {
+                if (playerMap.containsKey(e.player.uniqueId)) e.isCancelled = true
             }
         }, this)
         getCommand("modelanimator")?.setExecutor(object : TabExecutor {

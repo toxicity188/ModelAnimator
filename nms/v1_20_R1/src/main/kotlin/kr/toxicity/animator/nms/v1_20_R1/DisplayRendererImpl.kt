@@ -42,7 +42,7 @@ class DisplayRendererImpl(private val nmsImpl: NMSImpl): IRenderer {
         }
 
         fun updateRotation() {
-            val angle = if (!limb.type.isItem) limb.rotation.add(PI, 0.0, PI)
+            val angle = if (!limb.type.isItem) limb.rotation
             else limb.rotation.add(PI / 2, 0.0, 0.0)
             display.setTransformation(Transformation(
                 translation,

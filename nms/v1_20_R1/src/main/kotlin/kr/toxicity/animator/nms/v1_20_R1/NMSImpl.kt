@@ -9,7 +9,7 @@ import com.ticxo.playeranimator.api.texture.TextureWrapper
 import kr.toxicity.animator.api.nms.NMS
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtUtils
-import net.minecraft.network.protocol.game.*
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.ai.behavior.EntityTracker
 import org.bukkit.Material
@@ -34,6 +34,7 @@ class NMSImpl: NMS, com.ticxo.playeranimator.nms.v1_20_R1.NMSHandler_v1_20_R1() 
             }))
         })
     }
+
     override fun sendItemChange(player: Player, itemStackMap: Map<org.bukkit.inventory.EquipmentSlot, ItemStack>, targetPlayers: Collection<Player>) {
         val packet = ClientboundSetEquipmentPacket(
             (player as CraftPlayer).handle.id,
