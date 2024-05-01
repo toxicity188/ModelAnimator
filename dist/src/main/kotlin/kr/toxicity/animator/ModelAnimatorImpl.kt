@@ -196,7 +196,8 @@ class ModelAnimatorImpl: ModelAnimator() {
                     }
                     else -> {
                         p0.sendMessage("/ma reload")
-                        p0.sendMessage("/ma play <animation>")
+                        p0.sendMessage("/ma play <animation> [player]")
+                        p0.sendMessage("/ma stop [player]")
                     }
                 }
                 return true
