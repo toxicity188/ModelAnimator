@@ -170,7 +170,7 @@ class ModelAnimatorImpl: ModelAnimator() {
                                 return true
                             }
                             if (p3.size < 2) {
-                                p0.sendMessage("/ma play <animation>")
+                                p0.sendMessage("/ma play <animation> [player]")
                                 return true
                             }
                             when (animate(player, p3[1])) {
@@ -211,7 +211,7 @@ class ModelAnimatorImpl: ModelAnimator() {
             ): List<String>? {
                 return when (p3.size) {
                     1 -> listOf("reload", "play", "stop")
-                    2 -> when (p3[1]) {
+                    2 -> when (p3[0]) {
                         "play" -> ArrayList<String>().apply {
                             animator.animationManager.registry.forEach {
                                 val key = it.key.substringAfterLast(':')
