@@ -276,11 +276,11 @@ class ModelAnimatorImpl: ModelAnimator() {
                     targetPlayer
                 )
                 show()
+                playerMap.remove(uuid)
             }
             private fun show() {
                 player.updateInventory()
                 player.isInvisible = false
-                playerMap.remove(uuid)
             }
             override fun cancel() {
                 targetPlayer.forEach {
