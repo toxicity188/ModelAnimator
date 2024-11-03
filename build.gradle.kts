@@ -1,28 +1,16 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "1.9.23"
-    id("com.github.johnrengelman.shadow") version("8.1.1")
-    id("io.papermc.paperweight.userdev") version "1.5.15" apply false
+    kotlin("jvm") version "2.0.21"
+    id("io.github.goooler.shadow") version "8.1.8"
+    id("io.papermc.paperweight.userdev") version "1.7.4" apply false
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-val api = project(":api")
-val dist = project(":dist")
-val scheduler = project(":scheduler")
+val minecraftVersion = "1.21.3"
+val adventureVersion = "4.17.0"
+val platformVersion = "4.3.4"
 
-val minecraftVersion = "1.20.4"
-val adventureVersion = "4.16.0"
-val platformVersion = "4.3.2"
-
-val nmsVersions = listOf(
-    "v1_19_R3",
-    "v1_20_R1",
-    "v1_20_R2",
-    "v1_20_R3"
-)
-
-val shadedDependencies = listOf(
-    "com.ticxo.playeranimator:PlayerAnimator:R1.2.8"
-)
+val targetJavaVersion = 21
 
 allprojects {
     apply(plugin = "java")
@@ -38,18 +26,37 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
+        compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.7")
     }
 
     tasks {
         compileJava {
+            options.compilerArgs.addAll(listOf("-source", "17", "-target", "17"))
             options.encoding = Charsets.UTF_8.name()
         }
-        javadoc {
-            options.encoding = Charsets.UTF_8.name()
+        compileKotlin {
+            compilerOptions {
+                freeCompilerArgs.addAll(listOf("-jvm-target", "17"))
+            }
         }
     }
+
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
 }
+
+fun Project.legacy() = also { p ->
+    p.java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+val api = project("api").legacy()
+val dist = project("dist")
+val scheduler = project(":scheduler")
+
+val shadedDependencies = listOf(
+    "com.ticxo.playeranimator:PlayerAnimator:R1.2.8"
+)
 
 fun Project.setupDependencies() {
     dependencies {
@@ -59,13 +66,28 @@ fun Project.setupDependencies() {
     }
 }
 
-nmsVersions.forEach {
-    val project = project(":nms:$it")
-    project.apply(plugin = "io.papermc.paperweight.userdev")
-    project.dependencies {
+val legacyNMSVersion = listOf(
+    "v1_19_R3",
+    "v1_20_R1",
+    "v1_20_R2",
+    "v1_20_R3"
+).map {
+    project("nms:$it").legacy()
+}
+val currentNMSVersion = listOf(
+    "v1_20_R4",
+    "v1_21_R1",
+    "v1_21_R2"
+).map {
+    project("nms:$it")
+}
+
+val allNMSVersion = (legacyNMSVersion + currentNMSVersion).onEach {
+    it.apply(plugin = "io.papermc.paperweight.userdev")
+    it.dependencies {
         compileOnly(api)
     }
-    project.setupDependencies()
+    it.setupDependencies()
 }
 
 dist.dependencies {
@@ -73,8 +95,8 @@ dist.dependencies {
     scheduler.subprojects.forEach {
         compileOnly(it)
     }
-    nmsVersions.forEach { nms ->
-        compileOnly(project(":nms:$nms"))
+    allNMSVersion.forEach { nms ->
+        compileOnly(nms)
     }
 }
 
@@ -114,16 +136,16 @@ dependencies {
     shadedDependencies.forEach { dependency ->
         implementation(dependency)
     }
-    nmsVersions.forEach {
-        implementation(project(":nms:$it", configuration = "reobf"))
+    allNMSVersion.forEach {
+        implementation(project("nms:${it.name}", configuration = "reobf"))
     }
 }
 
 scheduler.project("folia") {
+    setupDependencies()
     dependencies {
         compileOnly(api)
-        compileOnly("dev.folia:folia-api:$minecraftVersion-R0.1-SNAPSHOT")
-        setupDependencies()
+        compileOnly("io.papermc.paper:paper-api:$minecraftVersion-R0.1-SNAPSHOT")
     }
 }
 
@@ -134,8 +156,11 @@ tasks {
         finalizedBy(shadowJar)
     }
     shadowJar {
-        nmsVersions.forEach {
-            dependsOn(":nms:$it:reobfJar")
+        allNMSVersion.forEach {
+            dependsOn(it.tasks.named("reobfJar"))
+        }
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "spigot"
         }
         archiveClassifier = ""
         fun prefix(pattern: String) {
@@ -152,14 +177,7 @@ tasks {
             prefix(it)
         }
     }
-}
-
-val targetJavaVersion = 17
-
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-}
-
-kotlin {
-    jvmToolchain(targetJavaVersion)
+    runServer {
+        version(minecraftVersion)
+    }
 }
