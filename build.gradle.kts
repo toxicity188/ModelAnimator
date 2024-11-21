@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
 
     group = "kr.toxicity.animator"
-    version = "1.0"
+    version = "1.1"
 
     repositories {
         mavenCentral()
