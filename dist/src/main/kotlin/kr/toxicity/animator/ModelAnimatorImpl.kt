@@ -62,6 +62,7 @@ class ModelAnimatorImpl: ModelAnimator() {
             MinecraftVersion.version1_20_5, MinecraftVersion.version1_20_6 -> kr.toxicity.animator.nms.v1_20_R4.NMSImpl()
             MinecraftVersion.version1_21, MinecraftVersion.version1_21_1 -> kr.toxicity.animator.nms.v1_21_R1.NMSImpl()
             MinecraftVersion.version1_21_2, MinecraftVersion.version1_21_3 -> kr.toxicity.animator.nms.v1_21_R2.NMSImpl()
+            MinecraftVersion.version1_21_4 -> kr.toxicity.animator.nms.v1_21_R3.NMSImpl()
             else -> {
                 warn("Unsupported version found: $version")
                 warn("Plugin will automatically disabled.")

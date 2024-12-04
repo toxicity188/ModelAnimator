@@ -1,12 +1,12 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "1.7.4" apply false
+    id("io.papermc.paperweight.userdev") version "1.7.6" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-val minecraftVersion = "1.21.3"
+val minecraftVersion = "1.21.4"
 val adventureVersion = "4.17.0"
 val platformVersion = "4.3.4"
 
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
 
     group = "kr.toxicity.animator"
-    version = "1.1"
+    version = "1.2"
 
     repositories {
         mavenCentral()
@@ -77,7 +77,8 @@ val legacyNMSVersion = listOf(
 val currentNMSVersion = listOf(
     "v1_20_R4",
     "v1_21_R1",
-    "v1_21_R2"
+    "v1_21_R2",
+    "v1_21_R3"
 ).map {
     project("nms:$it")
 }
